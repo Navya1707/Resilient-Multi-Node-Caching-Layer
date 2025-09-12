@@ -76,12 +76,6 @@ The Distributed Cache System consists of the following components:
    ./load_test/loadTest.sh
    ```
 
-## TODO
--  [ ] Support for expirable key-value
--  [ ] Local cache in Master server for better performance
--  [ ] Implement replicas for Auxiliary servers with leader selection (might need zookeeper)
-
-
 ## Configuration
 
 - To adjust the number of auxiliary servers, modify the `docker-compose.yml` file and add/remove auxiliary server instances as needed.
