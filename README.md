@@ -82,6 +82,3 @@ The Distributed Cache System consists of the following components:
 
 - The cache system's behavior, such as cache size, eviction policies, and request timeouts, can be configured in the server codebase.
 
-## Contributing
-
-Contributions to the Distributed Cache System are welcome! If you find any issues or have suggestions for improvements, please submit a GitHub issue or create a pull request.
