@@ -1,39 +1,32 @@
 
-# Distributed-Cache-System
-This implementation of the distributed cache system is an attempt to make a high-performant, scalable and fault-tolerant caching solution to improve performance and efficiency of distributed systems. It utilizes master-auxiliary architecture, where master servers select which auxiliary server to choose when getting or putting key-vals. 
+# A Resilient Distributed Caching Infrastructure
+This is a fault-tolerant, high-throughput distributed caching infrastructure designed to optimize data retrieval performance in large-scale distributed systems. It provides horizontal scalability, dynamic rebalancing, and fault recovery through a robust master–auxiliary architecture. The system ensures minimal latency and high availability, even under heavy load or node failure conditions.
 
-![Architecture of Distributed Cache System](distributed-cache.png)
-## Features
+![Architecture](distributed-cache.png)
+## Key Highlights
 
-- Scalable distributed cache system
-- Consistent hashing for efficient key distribution
-- Master server scaled up to multiple containers
-- Load balancing using Nginx
-- Auxiliary (aux) servers for caching data
-- Rebalance cache data when a node is added/removed or on catastrophic failure
-- Backup for catastrophic failure of all aux servers
-- Docker containerization for easy deployment
-- Metrics monitoring with Prometheus
-- Visualization with Grafana
-- LRU (Least Recently Used) caching algorithm implemented using Doubly Linked List (DLL) and Hashmap
+-⚡ Scalable Multi-Node Architecture: Supports horizontal scaling with master and auxiliary nodes running in separate containers.
+-🎯 Consistent Hashing: Guarantees efficient and balanced key distribution while minimizing data movement during node changes.
+-⚙️ Smart Load Balancing: NGINX is integrated to distribute client requests evenly among multiple master servers.
+-🧠 Intelligent Caching Layer: Each auxiliary server maintains an in-memory LRU cache using a hybrid Doubly Linked List + HashMap design for constant-time access and eviction.
+-💾 Resilient Recovery Mechanism: Automatic data rebalancing and periodic volume backups ensure data persistence after crashes or node restarts.
+-📈 Monitoring & Visualization: Real-time observability with Prometheus for metrics and Grafana for performance dashboards.
+-🧰 Containerized Deployment: Fully containerized via Docker Compose for effortless deployment, scaling, and orchestration.
 
-## Architecture
+## System Architecture
 
-The Distributed Cache System consists of the following components:
+The Cache System consists of the following components:
 
-- **Master Server**: The master node acts as the central coordinator and is responsible for handling client requests. It receives key-value pairs from clients and determines the appropriate auxiliary server to store the data using a consistent hashing algorithm. The master node also handles the retrieval of data from auxiliary servers and forwards read requests accordingly.
-
-- **Auxiliary (Aux) Servers**: The auxiliary servers store the cached data. They are replicated instances deployed in a consistent hash ring to ensure efficient distribution and load balancing. Each auxiliary server is responsible for maintaining a local LRU (Least Recently Used) cache, implemented using a combination of a hashtable and a doubly linked list (DLL). This cache allows for fast access and eviction of less frequently used data.
-
-- **Load Balancing**: The load balancer, typically implemented using nginx, acts as an intermediary between the clients and the master node. It distributes incoming client requests across multiple instances of the master node, enabling horizontal scaling and improved availability.
-
-- **Metrics Monitoring**: Prometheus is integrated into both master and auxliliary server to collect count and response time of GET and POST requests.
-
-- **Visualization**: Grafana is used to visualize the collected metrics from Prometheus, providing insightful dashboards and graphs for monitoring the cache system's performance.
-  
-- **Docker**: The project utilizes Docker to containerize and deploy the master and auxiliary servers, making it easy to scale and manage the system.
-
--  **Load Test**: To ensure the system's reliability and performance, a Python script for load testing was developed. The script utilizes Locust, a popular load testing framework.The script defines a set of tasks for load testing the cache system. The put task sends a POST request to the /data endpoint, randomly selecting a payload from a predefined list. The get task sends a GET request to the /data/{key} endpoint, randomly selecting a key from a predefined list. By utilizing this load testing script, it can simulate multiple concurrent users and measure the performance and scalability of the distributed cache system.
+1. Master Node
+The master acts as the control plane — routing requests, applying consistent hashing to determine the correct auxiliary node, and managing rebalancing operations when nodes join or leave the system. It ensures that key-to-server mappings remain optimal during scaling or recovery events.
+2. Auxiliary Nodes
+Auxiliary servers form the data layer, handling actual caching operations. Each node maintains its own local cache with an LRU eviction policy, ensuring high-speed access to frequently used data. The nodes are placed in a consistent hash ring for optimal key distribution.
+3. Load Balancer
+A centralized NGINX load balancer manages request distribution across master instances, supporting round-robin scheduling and connection pooling to handle high throughput gracefully.
+4. Observability Stack
+Prometheus agents on each node collect system metrics like request latency, throughput, and cache hit ratio. Grafana visualizes this telemetry data in intuitive dashboards for continuous monitoring and debugging.
+5. Deployment Layer
+All services (master, auxiliary, and monitoring components) are containerized with Docker Compose, allowing rapid setup and teardown for testing or scaling experiments.
 
 
 
