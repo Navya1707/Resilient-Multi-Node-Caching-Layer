@@ -32,26 +32,25 @@ All services (master, auxiliary, and monitoring components) are containerized wi
 
 ## Data flow
 
-1. Client Interaction: Clients interact to distributed cache system via Load Balancer.
-   
-2. Load Balancer Routing: The load balancer receives the client requests and distributes them among the available instances of the master node using Round-Robin policy. This ensures a balanced workload and improved performance. The configuration can be tweaked to increase the connection pool or increase the number of works processed by each of the worker.
-   
-3. Master Node Processing: The master node receives the client requests and performs the necessary operations. For write requests (storing key-value pairs), the master node applies a consistent hashing algorithm to determine the appropriate auxiliary server for data storage. It then forwards the data to the selected auxiliary server for caching. For read requests, the master node identifies the auxiliary server holding the requested data and retrieves it from there.
-   
-4. Auxiliary Server Caching: The auxiliary servers receive data from the master node and store it in their local LRU cache. This cache allows for efficient data access and eviction based on usage patterns.
-   
-5. Response to Clients: Once the master node receives a response from the auxiliary server (in the case of read requests) or completes the necessary operations (in the case of write requests), it sends the response back to the client through the load balancer. Clients can then utilize the retrieved data or receive confirmation of a successful operation.
+-Client Request: Incoming requests first reach the NGINX load balancer.
+-Master Routing: The master applies consistent hashing to locate the appropriate auxiliary node.
+-Cache Operation: The auxiliary node performs a GET or PUT in its local LRU cache.
+-Response Delivery: The result is returned to the client through the master and load balancer layers.
+-Metrics Pipeline: All events are logged to Prometheus for performance tracking.
 
-## Recovery
-- Health of auxiliary servers are monitored by master servers in a regular interval. If any of the auliliary servers go down or respawned, the master knows about it and rebalance the key-val mappings using consistent hashing.
-  
-- In case if one or more auxiliary nodes are shutdown, the key-vals mappings are sent to the master node which rebalance them using consistent hashing. 
-  
-- Each auxiliary server backs up data in their container volume every 10 sec, incase a catastrophic failure occurs. These backups are then used when the server is respawned.
-  
-- In case if one or more auxiliary nodes are respawned, the key-vals mappings from the corresponding nodes in the hash ring are rebalanced using consistent hashing.
-  
-- When redistributing/remapping the key-vals, a copy is backed up in the shared volume of master containers incase if the whole system goes down and has to be quickly respawned. The backups can be used to salvage as much data as possible. When respawning the backup is rebalanced to corresponding auxiliary server.
+## Fault Recovery & Rebalancing
+-The master continuously monitors auxiliary node health via heartbeat checks.
+-Upon node failure, data is rebalanced using consistent hashing with minimal redistribution overhead.
+-Each auxiliary node backs up its cache snapshot every 10 seconds to persistent storage volumes.
+-During system restart, master containers restore data from shared volume backups for rapid recovery.
+
+
+## Testing & Benchmarking
+A dedicated load testing suite built with Locust simulates high concurrency to measure system performance under stress.
+Scenarios include:
+-Parallel read/write operations with varying payload sizes
+-Node addition/removal simulations
+-Latency and throughput tracking under scaled workloads
 
 
 ## Usage
@@ -71,7 +70,6 @@ All services (master, auxiliary, and monitoring components) are containerized wi
 
 ## Configuration
 
-- To adjust the number of auxiliary servers, modify the `docker-compose.yml` file and add/remove auxiliary server instances as needed.
-
-- The cache system's behavior, such as cache size, eviction policies, and request timeouts, can be configured in the server codebase.
+-The number of auxiliary servers can be scaled dynamically by updating the docker-compose.yml configuration to add or remove instances.
+-Core cache parameters — including cache size, eviction policy, and request timeout — are customizable within the server’s configuration files.
 
