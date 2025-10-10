@@ -6,6 +6,7 @@ This is a fault-tolerant, high-throughput distributed caching infrastructure des
 ## Key Highlights
 
 -⚡ Scalable Multi-Node Architecture: Supports horizontal scaling with master and auxiliary nodes running in separate containers.
+
 -🎯 Consistent Hashing: Guarantees efficient and balanced key distribution while minimizing data movement during node changes.
 -⚙️ Smart Load Balancing: NGINX is integrated to distribute client requests evenly among multiple master servers.
 -🧠 Intelligent Caching Layer: Each auxiliary server maintains an in-memory LRU cache using a hybrid Doubly Linked List + HashMap design for constant-time access and eviction.
