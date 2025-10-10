@@ -8,17 +8,23 @@ This is a fault-tolerant, high-throughput distributed caching infrastructure des
 -⚡ Scalable Multi-Node Architecture: Supports horizontal scaling with master and auxiliary nodes running in separate containers.
 
 -🎯 Consistent Hashing: Guarantees efficient and balanced key distribution while minimizing data movement during node changes.
+
 -⚙️ Smart Load Balancing: NGINX is integrated to distribute client requests evenly among multiple master servers.
+
 -🧠 Intelligent Caching Layer: Each auxiliary server maintains an in-memory LRU cache using a hybrid Doubly Linked List + HashMap design for constant-time access and eviction.
+
 -💾 Resilient Recovery Mechanism: Automatic data rebalancing and periodic volume backups ensure data persistence after crashes or node restarts.
+
 -📈 Monitoring & Visualization: Real-time observability with Prometheus for metrics and Grafana for performance dashboards.
+
 -🧰 Containerized Deployment: Fully containerized via Docker Compose for effortless deployment, scaling, and orchestration.
+
 
 ## System Architecture
 
 The Cache System consists of the following components:
 
-1. Master Node
+1. Master Node  
 The master acts as the control plane — routing requests, applying consistent hashing to determine the correct auxiliary node, and managing rebalancing operations when nodes join or leave the system. It ensures that key-to-server mappings remain optimal during scaling or recovery events.
 2. Auxiliary Nodes
 Auxiliary servers form the data layer, handling actual caching operations. Each node maintains its own local cache with an LRU eviction policy, ensuring high-speed access to frequently used data. The nodes are placed in a consistent hash ring for optimal key distribution.
