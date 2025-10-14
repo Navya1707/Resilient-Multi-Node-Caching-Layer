@@ -1,5 +1,5 @@
 
-# A Resilient Distributed Caching Infrastructure
+# A Resilient Multi Node Caching Infrastructure
 This is a fault-tolerant, high-throughput distributed caching infrastructure designed to optimize data retrieval performance in large-scale distributed systems. It provides horizontal scalability, dynamic rebalancing, and fault recovery through a robust master–auxiliary architecture. The system ensures minimal latency and high availability, even under heavy load or node failure conditions.
 
 ![Architecture](distributed-cache.png)
